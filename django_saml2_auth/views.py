@@ -216,10 +216,6 @@ def acs(r):
             get_reverse([denied, "denied", "django_saml2_auth:denied"])
         )
 
-    user_name = user_identity[
-        settings.SAML2_AUTH.get("ATTRIBUTES_MAP", {}).get("username", "UserName")
-    ][0]
-
     target_user = None
     is_new_user = False
 
@@ -228,6 +224,9 @@ def acs(r):
         find_user = import_string(find_user_spec)
         target_user = find_user(user_identity)
     else:
+        user_name = user_identity[
+            settings.SAML2_AUTH.get("ATTRIBUTES_MAP", {}).get("username", "UserName")
+        ][0]
         target_user = user_model.objects.filter(username=user_name).first()
 
     if target_user:
